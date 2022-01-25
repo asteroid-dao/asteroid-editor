@@ -1,11 +1,11 @@
-import React, { Fragment, useRef, useMemo, useState, useEffect } from 'react'
-import { m2h } from 'asteroid-parser'
+import React, { Fragment, useRef, useState, useEffect } from 'react'
 import { Flex, Box } from '@chakra-ui/react'
 import GithubCSS from './GithubCSS'
-import ReactQuill from 'react-quill'
-import 'react-quill/dist/quill.bubble.css'
+import QuillBubbleCSS from './QuillBubbleCSS'
 import Editor from '@monaco-editor/react'
-
+import { isNil } from 'ramda'
+let m2h = null
+let ReactQuill = null
 export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
   const options = {
     selectOnLineNumbers: true
@@ -14,11 +14,15 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
   function handleEditorWillMount(monaco) {
     monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true)
   }
-
   function handleEditorDidMount(editor, monaco) {
     monacoRef.current = editor
   }
-  return (
+  useEffect(() => {
+    ReactQuill = require('react-quill')
+    const parser = require('asteroid-parser')
+    m2h = parser.m2h
+  }, [])
+  return isNil(m2h) ? null : (
     <>
       <GithubCSS />
       <Flex boxSize='100%' width='100%'>
@@ -66,6 +70,7 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
           </>
         ) : (
           <Flex justify='center' width='100%'>
+            <QuillBubbleCSS />
             <style global jsx>{`
               .quill {
                 display: flex;
