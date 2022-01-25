@@ -1,7 +1,6 @@
 {
   "name": "asteroid-editor",
-  "version": "1.0.0",
-  "description": "Made with create-react-library",
+  "version": "0.0.1",
   "author": "ocrybit",
   "license": "MIT",
   "repository": "ocrybit/asteroid-editor",

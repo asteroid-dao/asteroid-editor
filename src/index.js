@@ -1,13 +1,10 @@
 import React, { Fragment, useRef, useMemo, useState, useEffect } from 'react'
-import { isEmpty } from 'ramda'
-import 'asteroid-editor/dist/index.css'
-import { m2h, h2m } from 'asteroid-parser'
-import { Nav } from 'asteroid-ui'
+import { m2h } from 'asteroid-parser'
 import { Flex, Box } from '@chakra-ui/react'
 import GithubCSS from './GithubCSS'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.bubble.css'
-import Editor, { DiffEditor, useMonaco, loader } from '@monaco-editor/react'
+import Editor from '@monaco-editor/react'
 
 export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
   const options = {
