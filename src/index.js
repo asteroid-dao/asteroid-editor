@@ -1,4 +1,4 @@
-import React, { useMemo, Fragment, useRef, useState, useEffect } from 'react'
+import React, { Fragment, useRef, useEffect } from 'react'
 import { Flex, Box, ChakraProvider } from '@chakra-ui/react'
 import GithubCSS from './GithubCSS'
 import QuillBubbleCSS from './QuillBubbleCSS'
@@ -267,7 +267,6 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
                   const length = e.getLength()
                   const text = e.getText(length - 2, 2)
                   if (text === '\n\n') quillRef.deleteText(length - 1, 1)
-
                   setHTML(val)
                 }}
                 modules={options}
@@ -275,7 +274,6 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
                 w='100%'
                 theme='bubble'
                 value={html}
-                onChange={setHTML}
                 placeholder='start typing here...'
               />
             </Box>
@@ -295,7 +293,6 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
                   const length = e.getLength()
                   const text = e.getText(length - 2, 2)
                   if (text === '\n\n') quillRef.deleteText(length - 1, 1)
-
                   setHTML(val)
                 }}
                 modules={options}
@@ -303,7 +300,6 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
                 w='100%'
                 theme='snow'
                 value={html}
-                onChange={setHTML}
                 placeholder='start typing here...'
               />
             </Box>

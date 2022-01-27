@@ -1,16 +1,21 @@
 import React, { useRef, useMemo, useState, useEffect } from 'react'
 import { isEmpty } from 'ramda'
-import 'asteroid-editor/dist/index.css'
-import { m2q, q2m } from 'asteroid-parser'
 import { Nav } from 'asteroid-ui'
 import { Flex, Box } from '@chakra-ui/react'
 import Editor from 'asteroid-editor'
-
+let q2m = null
+let m2q = null
 export default () => {
   const [nav, setNav] = useState({ modal: {} })
   const [mode, setMode] = useState(['markdown', null])
   const [html, setHTML] = useState('')
   const [md, setMD] = useState('')
+  useEffect(() => {
+    const parser = require('asteroid-parser')
+    q2m = parser.q2m
+    m2q = parser.m2q
+  }, [])
+
   const tmenu = [
     {
       key: 'markdown',
