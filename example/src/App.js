@@ -1,7 +1,7 @@
 import React, { useRef, useMemo, useState, useEffect } from 'react'
 import { isEmpty } from 'ramda'
 import 'asteroid-editor/dist/index.css'
-import { m2h, h2m } from 'asteroid-parser'
+import { m2q, q2m } from 'asteroid-parser'
 import { Nav } from 'asteroid-ui'
 import { Flex, Box } from '@chakra-ui/react'
 import Editor from 'asteroid-editor'
@@ -16,8 +16,7 @@ export default () => {
       key: 'markdown',
       name: 'Markdown',
       onClick: () => {
-        if (mode[0] === 'richtext' || mode[1] === 'richtext')
-          setMD(h2m(html).replace(/\n$/, ''))
+        if (mode[0] === 'richtext' || mode[1] === 'richtext') setMD(q2m(html))
         setMode(['markdown', mode[0] === 'preview' ? mode[1] : mode[0]])
       }
     },
@@ -25,7 +24,7 @@ export default () => {
       key: 'richtext',
       name: 'Rich Text',
       onClick: () => {
-        if (mode[0] === 'markdown' || mode[1] === 'markdown') setHTML(m2h(md))
+        if (mode[0] === 'markdown' || mode[1] === 'markdown') setHTML(m2q(md))
         setMode(['richtext', mode[0] === 'preview' ? mode[1] : mode[0]])
       }
     },

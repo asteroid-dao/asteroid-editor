@@ -1,4 +1,4 @@
-import React, { Fragment, useRef, useState, useEffect } from 'react'
+import React, { useMemo, Fragment, useRef, useState, useEffect } from 'react'
 import { Flex, Box, ChakraProvider } from '@chakra-ui/react'
 import GithubCSS from './GithubCSS'
 import QuillBubbleCSS from './QuillBubbleCSS'
@@ -7,19 +7,158 @@ import Editor from '@monaco-editor/react'
 import { isNil } from 'ramda'
 let m2h = null
 let ReactQuill = null
+let options = null
 export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
-  const options = {
-    selectOnLineNumbers: true
-  }
   const monacoRef = useRef(null)
-  function handleEditorWillMount(monaco) {
-    monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true)
-  }
-  function handleEditorDidMount(editor, monaco) {
-    monacoRef.current = editor
-  }
+  let quillRef = React.createRef()
   useEffect(() => {
     ReactQuill = require('react-quill')
+    let Parchment = ReactQuill.Quill.import('parchment')
+    let Delta = ReactQuill.Quill.import('delta')
+    let Break = ReactQuill.Quill.import('blots/break')
+    let Embed = ReactQuill.Quill.import('blots/embed')
+    let Block = ReactQuill.Quill.import('blots/block')
+    class SmartBreak extends Break {
+      length() {
+        return 1
+      }
+
+      value() {
+        return '\n'
+      }
+
+      insertInto(parent, ref) {
+        Embed.prototype.insertInto.call(this, parent, ref)
+      }
+    }
+
+    SmartBreak.blotName = 'break'
+    SmartBreak.tagName = 'BR'
+
+    function lineBreakMatcher() {
+      let newDelta = new Delta()
+      newDelta.insert({ break: '' })
+      return newDelta
+    }
+    ReactQuill.Quill.register(SmartBreak)
+    options = {
+      toolbar: [
+        [{ header: [1, 2, 3, false] }],
+        ['bold', 'italic', 'blockquote', 'link'],
+        [{ list: 'ordered' }, { list: 'bullet' }],
+        ['clean']
+      ],
+      clipboard: {
+        matchers: [['BR', lineBreakMatcher]]
+      },
+      keyboard: {
+        bindings: {
+          handleDelete(range, context) {
+            // Check for astral symbols
+            const length = /^[\uD800-\uDBFF][\uDC00-\uDFFF]/.test(
+              context.suffix
+            )
+              ? 2
+              : 1
+            if (range.index >= this.quill.getLength() - length) return
+            let formats = {}
+            const [line] = this.quill.getLine(range.index)
+            let delta = new Delta().retain(range.index).delete(length)
+            if (context.offset >= line.length() - 1) {
+              const [next] = this.quill.getLine(range.index + 1)
+              if (next) {
+                const curFormats = line.formats()
+                const nextFormats = this.quill.getFormat(range.index, 1)
+                formats = AttributeMap.diff(curFormats, nextFormats) || {}
+                if (Object.keys(formats).length > 0) {
+                  delta = delta.retain(next.length() - 1).retain(1, formats)
+                }
+              }
+            }
+            this.quill.updateContents(delta, ReactQuill.Quill.sources.USER)
+            this.quill.focus()
+          },
+          handleEnter: {
+            key: 13,
+            handler: function (range, context) {
+              if (range.length > 0) {
+                this.quill.scroll.deleteAt(range.index, range.length)
+              }
+              let lineFormats = Object.keys(context.format).reduce(function (
+                lineFormats,
+                format
+              ) {
+                if (
+                  Parchment.query(format, Parchment.Scope.BLOCK) &&
+                  !Array.isArray(context.format[format])
+                ) {
+                  lineFormats[format] = context.format[format]
+                }
+                return lineFormats
+              },
+              {})
+              var previousChar = this.quill.getText(range.index - 1, 1)
+              this.quill.insertText(
+                range.index,
+                '\n',
+                lineFormats,
+                ReactQuill.Quill.sources.USER
+              )
+              if (previousChar == '' || previousChar == '\n') {
+                this.quill.setSelection(
+                  range.index + 2,
+                  ReactQuill.Quill.sources.SILENT
+                )
+              } else {
+                this.quill.setSelection(
+                  range.index + 1,
+                  ReactQuill.Quill.sources.SILENT
+                )
+              }
+              try {
+                this.quill.selection.scrollIntoView()
+              } catch (e) {}
+              Object.keys(context.format).forEach(name => {
+                if (lineFormats[name] != null) return
+                if (Array.isArray(context.format[name])) return
+                if (name === 'link') return
+                this.quill.format(
+                  name,
+                  context.format[name],
+                  ReactQuill.Quill.sources.USER
+                )
+              })
+            }
+          },
+          linebreak: {
+            key: 13,
+            shiftKey: true,
+            handler: function (range, context) {
+              var nextChar = this.quill.getText(range.index + 1, 1)
+              var ee = this.quill.insertEmbed(
+                range.index,
+                'break',
+                true,
+                'user'
+              )
+              if (nextChar.length == 0) {
+                var ee = this.quill.insertEmbed(
+                  range.index,
+                  'break',
+                  true,
+                  'user'
+                )
+              }
+              this.quill.setSelection(
+                range.index + 1,
+                ReactQuill.Quill.sources.SILENT
+              )
+            }
+          }
+        }
+      }
+    }
+
     const parser = require('asteroid-parser')
     m2h = parser.m2h
   }, [])
@@ -84,10 +223,18 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
                 defaultLanguage='markdown'
                 theme='vs-dark'
                 value={md}
-                options={options}
+                options={{
+                  selectOnLineNumbers: true
+                }}
                 onChange={setMD}
-                beforeMount={handleEditorWillMount}
-                onMount={handleEditorDidMount}
+                beforeMount={monaco => {
+                  monaco.languages.typescript.javascriptDefaults.setEagerModelSync(
+                    true
+                  )
+                }}
+                onMount={(editor, monaco) => {
+                  monacoRef.current = editor
+                }}
                 h={height}
               />
             </Flex>
@@ -113,20 +260,23 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
               <QuillBubbleCSS />
               <QStyle />
               <ReactQuill
+                ref={el => {
+                  if (!isNil(el)) quillRef = el.getEditor()
+                }}
+                onChange={(val, d, s, e) => {
+                  const length = e.getLength()
+                  const text = e.getText(length - 2, 2)
+                  if (text === '\n\n') quillRef.deleteText(length - 1, 1)
+
+                  setHTML(val)
+                }}
+                modules={options}
                 maxW='750px'
                 w='100%'
                 theme='bubble'
                 value={html}
                 onChange={setHTML}
                 placeholder='start typing here...'
-                modules={{
-                  toolbar: [
-                    [{ header: [1, 2, 3, false] }],
-                    ['bold', 'italic', 'blockquote', 'link'],
-                    [{ list: 'ordered' }, { list: 'bullet' }],
-                    ['clean']
-                  ]
-                }}
               />
             </Box>
             <Box
@@ -138,20 +288,23 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
               <QuillSnowCSS />
               <QStyle />
               <ReactQuill
+                ref={el => {
+                  if (!isNil(el)) quillRef = el.getEditor()
+                }}
+                onChange={(val, d, s, e) => {
+                  const length = e.getLength()
+                  const text = e.getText(length - 2, 2)
+                  if (text === '\n\n') quillRef.deleteText(length - 1, 1)
+
+                  setHTML(val)
+                }}
+                modules={options}
                 maxW='750px'
                 w='100%'
                 theme='snow'
                 value={html}
                 onChange={setHTML}
                 placeholder='start typing here...'
-                modules={{
-                  toolbar: [
-                    [{ header: [1, 2, 3, false] }],
-                    ['bold', 'italic', 'blockquote', 'link'],
-                    [{ list: 'ordered' }, { list: 'bullet' }],
-                    ['clean']
-                  ]
-                }}
               />
             </Box>
           </Flex>

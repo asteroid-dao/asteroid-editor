@@ -14,7 +14,7 @@
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
     "asteroid-editor": "link:..",
-    "asteroid-parser": "^0.0.5",
+    "asteroid-parser": "^0.0.11",
     "asteroid-ui": "^0.0.5",
     "framer-motion": "4.1.17",
     "react": "link:../node_modules/react",
