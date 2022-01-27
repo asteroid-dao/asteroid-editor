@@ -3135,10 +3135,10 @@ ast-types-flow@0.0.7, ast-types-flow@^0.0.7:
   resolved "https://registry.yarnpkg.com/ast-types-flow/-/ast-types-flow-0.0.7.tgz#f70b735c6bca1a5c9c22d982c3e39e7feba3bdad"
   integrity sha1-9wtzXGvKGlycItmCw+Oef+ujva0=
 
-asteroid-parser@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/asteroid-parser/-/asteroid-parser-0.0.5.tgz#7c7861d6a0c0825f4534af34560c7c29105ea4b6"
-  integrity sha512-/G9MdyxQnM/0FJO5AMkzyeZ6p9De6nQ9VUfqQ25ihGT4Fr3tRoEdKzOfufpi5RLa70zZd1eApwwJFpMoHxHxWA==
+asteroid-parser@^0.0.11:
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/asteroid-parser/-/asteroid-parser-0.0.11.tgz#621605fb7d8cf2a90cdf3ffb380131934241d611"
+  integrity sha512-S2ajhGvdfbOUJBGApI/RsFmD92UQ8hyk1MsUicwDH+ZVVzy+Su5ZwwGPgiBDfdJMbZxyPIFC15Ir6w9qoqDCjA==
   dependencies:
     entities "^3.0.1"
     hast-util-to-mdast "8.1.0"
