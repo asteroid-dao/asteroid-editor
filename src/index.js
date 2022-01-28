@@ -1,14 +1,17 @@
 import React, { Fragment, useRef, useEffect } from 'react'
-import { Flex, Box, ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider, Flex, Box } from '@chakra-ui/react'
+import { isNil } from 'ramda'
+const entities = require('entities')
 import GithubCSS from './GithubCSS'
 import QuillBubbleCSS from './QuillBubbleCSS'
 import QuillSnowCSS from './QuillSnowCSS'
 import Editor from '@monaco-editor/react'
-import { isNil } from 'ramda'
+
+let options = null
 let m2h = null
 let ReactQuill = null
-let options = null
-export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
+
+const App = ({ height, setHTML, setMD, setMode, mode, md, html }) => {
   const monacoRef = useRef(null)
   let quillRef = React.createRef()
   useEffect(() => {
@@ -31,15 +34,14 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
         Embed.prototype.insertInto.call(this, parent, ref)
       }
     }
-
-    SmartBreak.blotName = 'break'
+    SmartBreak.blotName = 'inline-break'
     SmartBreak.tagName = 'BR'
-
     function lineBreakMatcher() {
       let newDelta = new Delta()
-      newDelta.insert({ break: '' })
+      newDelta.insert({ ['inline-break']: '' })
       return newDelta
     }
+
     ReactQuill.Quill.register(SmartBreak)
     options = {
       toolbar: [
@@ -53,31 +55,6 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
       },
       keyboard: {
         bindings: {
-          handleDelete(range, context) {
-            // Check for astral symbols
-            const length = /^[\uD800-\uDBFF][\uDC00-\uDFFF]/.test(
-              context.suffix
-            )
-              ? 2
-              : 1
-            if (range.index >= this.quill.getLength() - length) return
-            let formats = {}
-            const [line] = this.quill.getLine(range.index)
-            let delta = new Delta().retain(range.index).delete(length)
-            if (context.offset >= line.length() - 1) {
-              const [next] = this.quill.getLine(range.index + 1)
-              if (next) {
-                const curFormats = line.formats()
-                const nextFormats = this.quill.getFormat(range.index, 1)
-                formats = AttributeMap.diff(curFormats, nextFormats) || {}
-                if (Object.keys(formats).length > 0) {
-                  delta = delta.retain(next.length() - 1).retain(1, formats)
-                }
-              }
-            }
-            this.quill.updateContents(delta, ReactQuill.Quill.sources.USER)
-            this.quill.focus()
-          },
           handleEnter: {
             key: 13,
             handler: function (range, context) {
@@ -104,17 +81,10 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
                 lineFormats,
                 ReactQuill.Quill.sources.USER
               )
-              if (previousChar == '' || previousChar == '\n') {
-                this.quill.setSelection(
-                  range.index + 2,
-                  ReactQuill.Quill.sources.SILENT
-                )
-              } else {
-                this.quill.setSelection(
-                  range.index + 1,
-                  ReactQuill.Quill.sources.SILENT
-                )
-              }
+              this.quill.setSelection(
+                range.index + 1,
+                ReactQuill.Quill.sources.SILENT
+              )
               try {
                 this.quill.selection.scrollIntoView()
               } catch (e) {}
@@ -137,14 +107,14 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
               var nextChar = this.quill.getText(range.index + 1, 1)
               var ee = this.quill.insertEmbed(
                 range.index,
-                'break',
+                'inline-break',
                 true,
                 'user'
               )
               if (nextChar.length == 0) {
                 var ee = this.quill.insertEmbed(
                   range.index,
-                  'break',
+                  'inline-break',
                   true,
                   'user'
                 )
@@ -158,28 +128,38 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
         }
       }
     }
-
     const parser = require('asteroid-parser')
     m2h = parser.m2h
   }, [])
   const QStyle = () => (
     <style global jsx>{`
+      .ql-editor p,
+      .ql-editor h1,
+      .ql-editor h2,
+      .ql-editor h3 {
+        margin-bottom: 15px;
+      }
       .quill {
         display: flex;
+        align-items: center;
         flex-direction: column;
         width: 100%;
         height: 100%;
-        max-width: 750px;
       }
       .ql-container {
         overflow: visible;
         flex: 1;
         max-width: 750px;
         font-size: 17px;
+        width: 100%;
       }
       .ql-editor {
+        border: 0px;
         max-width: 750px;
         height: 100%;
+      }
+      .ql-container.ql-snow {
+        border: 0px;
       }
       .ql-container {
         border: 0px;
@@ -190,10 +170,16 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
       .ql-tooltip {
         margin-left: 120px;
       }
-      .ql-toolbar {
+      .ql-toolbar.ql-snow {
+        border-top: 0;
+        border-left: 0;
+        border-right: 0;
+        width: 100%;
+        max-width: 750px;
       }
     `}</style>
   )
+
   return isNil(m2h) ? null : (
     <ChakraProvider>
       <GithubCSS />
@@ -251,38 +237,7 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
           </>
         ) : (
           <Flex justify='center' w='100%' h={[height, null, '100%']}>
-            <Box
-              w='100%'
-              h='100%'
-              maxW='750px'
-              display={['none', null, 'block']}
-            >
-              <QuillBubbleCSS />
-              <QStyle />
-              <ReactQuill
-                ref={el => {
-                  if (!isNil(el)) quillRef = el.getEditor()
-                }}
-                onChange={(val, d, s, e) => {
-                  const length = e.getLength()
-                  const text = e.getText(length - 2, 2)
-                  if (text === '\n\n') quillRef.deleteText(length - 1, 1)
-                  setHTML(val)
-                }}
-                modules={options}
-                maxW='750px'
-                w='100%'
-                theme='bubble'
-                value={html}
-                placeholder='start typing here...'
-              />
-            </Box>
-            <Box
-              w='100%'
-              h='100%'
-              maxW='750px'
-              display={['block', null, 'none']}
-            >
+            <Box w='100%' h='100%'>
               <QuillSnowCSS />
               <QStyle />
               <ReactQuill
@@ -290,13 +245,10 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
                   if (!isNil(el)) quillRef = el.getEditor()
                 }}
                 onChange={(val, d, s, e) => {
-                  const length = e.getLength()
-                  const text = e.getText(length - 2, 2)
-                  if (text === '\n\n') quillRef.deleteText(length - 1, 1)
+                  console.log(val)
                   setHTML(val)
                 }}
                 modules={options}
-                maxW='750px'
                 w='100%'
                 theme='snow'
                 value={html}
@@ -309,3 +261,4 @@ export default ({ height, setHTML, setMD, setMode, mode, md, html }) => {
     </ChakraProvider>
   )
 }
+export default App
