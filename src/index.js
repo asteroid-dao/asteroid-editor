@@ -6,16 +6,29 @@ import GithubCSS from './GithubCSS'
 import QuillBubbleCSS from './QuillBubbleCSS'
 import QuillSnowCSS from './QuillSnowCSS'
 import Editor from '@monaco-editor/react'
-
+import ImageUploader from './quill-image-uploader'
+import LoadingImage from './image'
 let options = null
 let m2h = null
 let ReactQuill = null
 
-const App = ({ height, setHTML, setMD, setMode, mode, md, html }) => {
+const App = ({
+  height,
+  setHTML,
+  setMD,
+  setMode,
+  mode,
+  md,
+  html,
+  saveImage
+}) => {
   const monacoRef = useRef(null)
   let quillRef = React.createRef()
   useEffect(() => {
+    window.saveImage = saveImage
     ReactQuill = require('react-quill')
+    ReactQuill.Quill.register({ 'formats/imageBlot': LoadingImage })
+    ReactQuill.Quill.register('modules/imageUploader', ImageUploader)
     let Parchment = ReactQuill.Quill.import('parchment')
     let Delta = ReactQuill.Quill.import('delta')
     let Break = ReactQuill.Quill.import('blots/break')
@@ -46,10 +59,11 @@ const App = ({ height, setHTML, setMD, setMode, mode, md, html }) => {
     options = {
       toolbar: [
         [{ header: [1, 2, 3, false] }],
-        ['bold', 'italic', 'blockquote', 'link'],
+        ['bold', 'italic', 'blockquote', 'link', 'image'],
         [{ list: 'ordered' }, { list: 'bullet' }],
         ['clean']
       ],
+      imageUploader: {},
       clipboard: {
         matchers: [['BR', lineBreakMatcher]]
       },
@@ -236,7 +250,7 @@ const App = ({ height, setHTML, setMD, setMode, mode, md, html }) => {
             ></Box>
           </>
         ) : (
-          <Flex justify='center' w='100%' h={[height, null, '100%']}>
+          <Flex justify='center' w='100%' h={height}>
             <Box w='100%' h='100%'>
               <QuillSnowCSS />
               <QStyle />
@@ -244,10 +258,7 @@ const App = ({ height, setHTML, setMD, setMode, mode, md, html }) => {
                 ref={el => {
                   if (!isNil(el)) quillRef = el.getEditor()
                 }}
-                onChange={(val, d, s, e) => {
-                  console.log(val)
-                  setHTML(val)
-                }}
+                onChange={(val, d, s, e) => setHTML(val)}
                 modules={options}
                 w='100%'
                 theme='snow'

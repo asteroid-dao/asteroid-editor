@@ -3,11 +3,13 @@ import { isEmpty } from 'ramda'
 import { Nav } from 'asteroid-ui'
 import { Flex, Box } from '@chakra-ui/react'
 import Editor from 'asteroid-editor'
+import lf from 'localforage'
 let q2m = null
 let m2q = null
+
 export default () => {
   const [nav, setNav] = useState({ modal: {} })
-  const [mode, setMode] = useState(['markdown', null])
+  const [mode, setMode] = useState(['richtext', null])
   const [html, setHTML] = useState('')
   const [md, setMD] = useState('')
   useEffect(() => {
@@ -15,7 +17,16 @@ export default () => {
     q2m = parser.q2m
     m2q = parser.m2q
   }, [])
-
+  const saveImage = ({ url, id, ext, size }) =>
+    new Promise(async res => {
+      await lf.setItem(`_local_image-${id}`, {
+        url,
+        id,
+        ext,
+        size
+      })
+      res({ url: url })
+    })
   const tmenu = [
     {
       key: 'markdown',
@@ -59,7 +70,8 @@ export default () => {
           setMD,
           setHTML,
           setMode,
-          mode
+          mode,
+          saveImage
         }}
       />
     </Nav>
