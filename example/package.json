@@ -17,6 +17,7 @@
     "asteroid-parser": "^0.0.11",
     "asteroid-ui": "^0.0.5",
     "framer-motion": "4.1.17",
+    "localforage": "^1.10.0",
     "react": "link:../node_modules/react",
     "react-dom": "link:../node_modules/react-dom",
     "react-scripts": "link:../node_modules/react-scripts"
