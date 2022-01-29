@@ -1,4 +1,3 @@
-import LoadingImage from './image.js'
 import {
   hasPath,
   forEach,
@@ -180,7 +179,7 @@ class ImageUploader {
     }
     this.quill.insertEmbed(
       range.index,
-      LoadingImage.blotName,
+      'imageBlot',
       `data:image/${ext};local,${_id}`,
       'user'
     )
