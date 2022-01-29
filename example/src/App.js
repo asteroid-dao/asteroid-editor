@@ -18,14 +18,14 @@ export default () => {
     parser.setImageHook({
       fromBase64: url => {
         if (/^data\:image\/.+/.test(url)) {
-          const img = window.image_map[sha256(url)]
+          const img = (window.image_map || {})[sha256(url)]
           if (!isNil(img)) return `data:image/${img.ext};local,${img.id}`
         }
         return url
       },
       toBase64: url => {
         if (/^data\:image\/.+;local,/.test(url)) {
-          const img = window.image_map[url.split(',')[1]]
+          const img = (window.image_map || {})[url.split(',')[1]]
           if (!isNil(img)) return img.url
         }
         return url
@@ -47,7 +47,6 @@ export default () => {
       key: 'richtext',
       name: 'Rich Text',
       onClick: () => {
-        console.log(mode)
         if (mode[0] === 'markdown' || mode[1] === 'markdown') setHTML(m2q(md))
         setMode(['richtext', mode[0] === 'preview' ? mode[1] : mode[0]])
       }
@@ -58,7 +57,6 @@ export default () => {
       onClick: () => setMode(['preview', mode[0]])
     }
   ]
-  console.log(html)
   return (
     <Nav
       {...{
