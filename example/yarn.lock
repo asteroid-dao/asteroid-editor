@@ -2175,6 +2175,18 @@
     prop-types "^15.7.2"
     tslib "^2.1.0"
 
+"@react-hook/debounce@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@react-hook/debounce/-/debounce-4.0.0.tgz#5da87e7bfa158cfe2830ffc997dc1b755e261379"
+  integrity sha512-706Xcg+KKWHk9BuZQUQ0ZQKp9zhv3/MbqFenWVfHcynYpSGRVwQTzJRGvPxvsdtXxJv+HfgKTY/O/hEejakwmA==
+  dependencies:
+    "@react-hook/latest" "^1.0.2"
+
+"@react-hook/latest@^1.0.2":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@react-hook/latest/-/latest-1.0.3.tgz#c2d1d0b0af8b69ec6e2b3a2412ba0768ac82db80"
+  integrity sha512-dy6duzl+JnAZcDbNTfmaP3xHiKtbXYOaz3G51MGVljh548Y8MWzTr+PHLOfvpypEVW9zwvl+VyKjbWKEVbV1Rg==
+
 "@svgr/babel-plugin-add-jsx-attribute@^4.2.0":
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/@svgr/babel-plugin-add-jsx-attribute/-/babel-plugin-add-jsx-attribute-4.2.0.tgz#dadcb6218503532d6884b210e7f3c502caaa44b1"
@@ -3007,10 +3019,10 @@ ast-types-flow@0.0.7, ast-types-flow@^0.0.7:
   version "0.0.0"
   uid ""
 
-asteroid-parser@^0.0.12:
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/asteroid-parser/-/asteroid-parser-0.0.12.tgz#a829e22d8685204eec1b166e45fa001d53cf8e04"
-  integrity sha512-VRfbv0VWaLmupvvefwb1Hwog9+NIcm9rFp/MVZz8qyR/6bZNCq+dsfLEDuPw/3WMHbC2bu7Asvmwceb9UK7Tdw==
+asteroid-parser@^0.0.13:
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/asteroid-parser/-/asteroid-parser-0.0.13.tgz#7c9e9bb580f8905d29103c8a6a610c0985e9bbe5"
+  integrity sha512-j/QdLJmQj1DWwwDmNebxsddcPAN/uqRH1aazHF9XWKMLFPcig3yy3cKK0vUob52JLyqy6gHR2RBSLBHZytwvZA==
   dependencies:
     entities "^3.0.1"
     hast-util-to-mdast "8.1.0"
@@ -10502,10 +10514,10 @@ quill-delta@^3.6.2:
     extend "^3.0.2"
     fast-diff "1.1.2"
 
-quill-image-uploader2@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/quill-image-uploader2/-/quill-image-uploader2-0.0.1.tgz#e4e2b3a9c7105bc3fbd6ba2febdc2c45e10a9dd2"
-  integrity sha512-4wUd5J1Od/Xx8uHOBx+Tg13UlcdKS/cHswM6OEvOnzWzLIZmuqDiqW9GtqgEfjN/W01NSLjk1iAoMeuwhBHSeQ==
+quill-image-uploader2@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/quill-image-uploader2/-/quill-image-uploader2-0.0.3.tgz#b045e5cd85afc94e27236f34328e618f0e1a59c3"
+  integrity sha512-z3lmvyl6mrNvdLWkyYeGSWoeWTG6lj4bHv9VmJi52ehRRvh8R8hUshSaDrKfUfrwQDee/X1ZiR48c2OtyboN3Q==
   dependencies:
     ipfs-only-hash "^4.0.0"
     js-sha256 "^0.9.0"
