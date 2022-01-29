@@ -4,15 +4,21 @@ import { Nav } from 'asteroid-ui'
 import { Flex, Box } from '@chakra-ui/react'
 import Editor from 'asteroid-editor'
 import { sha256 } from 'js-sha256'
-
+import { useDebounce } from '@react-hook/debounce'
 let q2m = null
 let m2q = null
-
+let m2h = null
 export default () => {
   const [nav, setNav] = useState({ modal: {} })
   const [mode, setMode] = useState(['richtext', null])
   const [html, setHTML] = useState('')
   const [md, setMD] = useState('')
+  const [initEditor, setInitEditor] = useState(false)
+  const [preview, setPreview] = useDebounce('')
+  useEffect(() => {
+    if (initEditor) setPreview(m2h(md))
+  }, [md, initEditor])
+
   useEffect(() => {
     const parser = require('asteroid-parser')
     parser.setImageHook({
@@ -33,6 +39,8 @@ export default () => {
     })
     q2m = parser.q2m
     m2q = parser.m2q
+    m2h = parser.m2h
+    setInitEditor(true)
   }, [])
   const tmenu = [
     {
@@ -71,6 +79,7 @@ export default () => {
     >
       <Editor
         {...{
+          preview,
           height: nav.height,
           html,
           md,

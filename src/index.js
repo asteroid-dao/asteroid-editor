@@ -1,5 +1,4 @@
 import React, { useState, Fragment, useRef, useEffect } from 'react'
-import { useDebounce } from '@react-hook/debounce'
 import { ChakraProvider, Flex, Box } from '@chakra-ui/react'
 const entities = require('entities')
 import GithubCSS from './GithubCSS'
@@ -21,15 +20,12 @@ const App = ({
   mode,
   md,
   html,
-  saveImage
+  saveImage,
+  preview
 }) => {
   const monacoRef = useRef(null)
   let quillRef = React.createRef()
-  const [preview, setPreview] = useDebounce('')
   const [initEditor, setInitEditor] = useState(false)
-  useEffect(() => {
-    if (initEditor) setPreview(m2h(md))
-  }, [md, initEditor])
   useEffect(() => {
     ReactQuill = require('react-quill')
     ImageUploader(ReactQuill.Quill)
