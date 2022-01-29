@@ -149,16 +149,15 @@ const App = ({
     const parser = require('asteroid-parser')
     parser.setImageHook({
       fromBase64: url => {
-        console.log(url)
         if (/^data\:image\/.+/.test(url)) {
-          const img = window.image_map[sha256(url)]
+          const img = (window.image_map || {})[sha256(url)]
           if (!isNil(img)) return `data:image/${img.ext};local,${img.id}`
         }
         return url
       },
       toBase64: url => {
         if (/^data\:image\/.+;local,/.test(url)) {
-          const img = window.image_map[url.split(',')[1]]
+          const img = (window.image_map || {})[url.split(',')[1]]
           if (!isNil(img)) return img.url
         }
         return url
