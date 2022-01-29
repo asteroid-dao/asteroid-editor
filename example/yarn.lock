@@ -10674,6 +10674,11 @@ react-focus-lock@2.5.2:
     use-callback-ref "^1.2.5"
     use-sidecar "^1.0.5"
 
+react-hooks-worker@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-hooks-worker/-/react-hooks-worker-1.0.3.tgz#08432ebd3c9f9cf26e3f65327f88ae2828be763b"
+  integrity sha512-XFpK8OxkzXBvh+gmOsyZFAujruOci4tDI44BfwlYtk0zFiFJRVFuCdgK6w+/BxN1K0P4IH6A5tXjPshlu6fhQg==
+
 react-icons@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-4.3.1.tgz#2fa92aebbbc71f43d2db2ed1aed07361124e91ca"

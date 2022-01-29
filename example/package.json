@@ -13,6 +13,7 @@
     "@chakra-ui/react": "^1.7.4",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@react-hook/debounce": "^4.0.0",
     "asteroid-editor": "link:..",
     "asteroid-parser": "^0.0.13",
     "asteroid-ui": "^0.0.5",
