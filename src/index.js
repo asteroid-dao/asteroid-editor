@@ -7,7 +7,6 @@ import QuillBubbleCSS from './QuillBubbleCSS'
 import QuillSnowCSS from './QuillSnowCSS'
 import Editor from '@monaco-editor/react'
 import ImageUploader from './quill-image-uploader'
-import LoadingImage from './image'
 let options = null
 let m2h = null
 let ReactQuill = null
@@ -27,6 +26,33 @@ const App = ({
   useEffect(() => {
     window.saveImage = saveImage
     ReactQuill = require('react-quill')
+    const BlockEmbed = ReactQuill.Quill.import('blots/block/embed')
+    class LoadingImage extends BlockEmbed {
+      static create(src) {
+        const id = typeof src === 'string' ? src.split(',').pop() : null
+        if (isNil(id)) return null
+        const image_map = window.image_map || {}
+        const node = super.create(image_map[id].url)
+        if (src === true) return node
+
+        const image = document.createElement('img')
+        image.setAttribute('src', image_map[id].url)
+        node.appendChild(image)
+        return node
+      }
+      deleteAt(index, length) {
+        super.deleteAt(index, length)
+        this.cache = {}
+      }
+      static value(domNode) {
+        const { src, custom } = domNode.dataset
+        return { src, custom }
+      }
+    }
+
+    LoadingImage.blotName = 'imageBlot'
+    LoadingImage.className = 'image-uploading'
+    LoadingImage.tagName = 'span'
     ReactQuill.Quill.register({ 'formats/imageBlot': LoadingImage })
     ReactQuill.Quill.register('modules/imageUploader', ImageUploader)
     let Parchment = ReactQuill.Quill.import('parchment')
