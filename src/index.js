@@ -1,12 +1,14 @@
-import React, { Fragment, useRef, useEffect } from 'react'
+import React, { useState, Fragment, useRef, useEffect } from 'react'
+import { useDebounce } from '@react-hook/debounce'
 import { ChakraProvider, Flex, Box } from '@chakra-ui/react'
-import { isNil } from 'ramda'
 const entities = require('entities')
 import GithubCSS from './GithubCSS'
 import QuillBubbleCSS from './QuillBubbleCSS'
 import QuillSnowCSS from './QuillSnowCSS'
 import Editor from '@monaco-editor/react'
-import ImageUploader from './quill-image-uploader'
+import ImageUploader from 'quill-image-uploader2'
+import { o, isNil } from 'ramda'
+import { sha256 } from 'js-sha256'
 let options = null
 let m2h = null
 let ReactQuill = null
@@ -23,38 +25,14 @@ const App = ({
 }) => {
   const monacoRef = useRef(null)
   let quillRef = React.createRef()
+  const [preview, setPreview] = useDebounce('')
+  const [initEditor, setInitEditor] = useState(false)
   useEffect(() => {
-    window.saveImage = saveImage
+    if (initEditor) setPreview(m2h(md))
+  }, [md, initEditor])
+  useEffect(() => {
     ReactQuill = require('react-quill')
-    const BlockEmbed = ReactQuill.Quill.import('blots/block/embed')
-    class LoadingImage extends BlockEmbed {
-      static create(src) {
-        const id = typeof src === 'string' ? src.split(',').pop() : null
-        if (isNil(id)) return null
-        const image_map = window.image_map || {}
-        const node = super.create(image_map[id].url)
-        if (src === true) return node
-
-        const image = document.createElement('img')
-        image.setAttribute('src', image_map[id].url)
-        node.appendChild(image)
-        return node
-      }
-      deleteAt(index, length) {
-        super.deleteAt(index, length)
-        this.cache = {}
-      }
-      static value(domNode) {
-        const { src, custom } = domNode.dataset
-        return { src, custom }
-      }
-    }
-
-    LoadingImage.blotName = 'imageBlot'
-    LoadingImage.className = 'image-uploading'
-    LoadingImage.tagName = 'span'
-    ReactQuill.Quill.register({ 'formats/imageBlot': LoadingImage })
-    ReactQuill.Quill.register('modules/imageUploader', ImageUploader)
+    ImageUploader(ReactQuill.Quill)
     let Parchment = ReactQuill.Quill.import('parchment')
     let Delta = ReactQuill.Quill.import('delta')
     let Break = ReactQuill.Quill.import('blots/break')
@@ -89,7 +67,7 @@ const App = ({
         [{ list: 'ordered' }, { list: 'bullet' }],
         ['clean']
       ],
-      imageUploader: {},
+      imageUploader: { upload: saveImage },
       clipboard: {
         matchers: [['BR', lineBreakMatcher]]
       },
@@ -169,7 +147,25 @@ const App = ({
       }
     }
     const parser = require('asteroid-parser')
+    parser.setImageHook({
+      fromBase64: url => {
+        console.log(url)
+        if (/^data\:image\/.+/.test(url)) {
+          const img = window.image_map[sha256(url)]
+          if (!isNil(img)) return `data:image/${img.ext};local,${img.id}`
+        }
+        return url
+      },
+      toBase64: url => {
+        if (/^data\:image\/.+;local,/.test(url)) {
+          const img = window.image_map[url.split(',')[1]]
+          if (!isNil(img)) return img.url
+        }
+        return url
+      }
+    })
     m2h = parser.m2h
+    setInitEditor(true)
   }, [])
   const QStyle = () => (
     <style global jsx>{`
@@ -220,7 +216,7 @@ const App = ({
     `}</style>
   )
 
-  return isNil(m2h) ? null : (
+  return !initEditor ? null : (
     <ChakraProvider>
       <GithubCSS />
       <Flex boxSize='100%' w='100%'>
@@ -233,7 +229,7 @@ const App = ({
               p={3}
               h='100%'
               dangerouslySetInnerHTML={{
-                __html: mode[0] === 'markdown' ? m2h(md) : html
+                __html: mode[0] === 'markdown' ? preview : html
               }}
             />
           </Flex>
@@ -271,7 +267,7 @@ const App = ({
               flex={1}
               p={3}
               dangerouslySetInnerHTML={{
-                __html: m2h(md)
+                __html: preview
               }}
             ></Box>
           </>

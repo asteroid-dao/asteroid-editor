@@ -3007,10 +3007,10 @@ ast-types-flow@0.0.7, ast-types-flow@^0.0.7:
   version "0.0.0"
   uid ""
 
-asteroid-parser@^0.0.11:
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/asteroid-parser/-/asteroid-parser-0.0.11.tgz#621605fb7d8cf2a90cdf3ffb380131934241d611"
-  integrity sha512-S2ajhGvdfbOUJBGApI/RsFmD92UQ8hyk1MsUicwDH+ZVVzy+Su5ZwwGPgiBDfdJMbZxyPIFC15Ir6w9qoqDCjA==
+asteroid-parser@^0.0.12:
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/asteroid-parser/-/asteroid-parser-0.0.12.tgz#a829e22d8685204eec1b166e45fa001d53cf8e04"
+  integrity sha512-VRfbv0VWaLmupvvefwb1Hwog9+NIcm9rFp/MVZz8qyR/6bZNCq+dsfLEDuPw/3WMHbC2bu7Asvmwceb9UK7Tdw==
   dependencies:
     entities "^3.0.1"
     hast-util-to-mdast "8.1.0"
@@ -10501,6 +10501,15 @@ quill-delta@^3.6.2:
     deep-equal "^1.0.1"
     extend "^3.0.2"
     fast-diff "1.1.2"
+
+quill-image-uploader2@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/quill-image-uploader2/-/quill-image-uploader2-0.0.1.tgz#e4e2b3a9c7105bc3fbd6ba2febdc2c45e10a9dd2"
+  integrity sha512-4wUd5J1Od/Xx8uHOBx+Tg13UlcdKS/cHswM6OEvOnzWzLIZmuqDiqW9GtqgEfjN/W01NSLjk1iAoMeuwhBHSeQ==
+  dependencies:
+    ipfs-only-hash "^4.0.0"
+    js-sha256 "^0.9.0"
+    ramda "^0.28.0"
 
 quill@^1.3.7:
   version "1.3.7"
