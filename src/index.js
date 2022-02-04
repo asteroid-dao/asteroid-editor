@@ -1,5 +1,5 @@
 import React, { useState, Fragment, useRef, useEffect } from 'react'
-import { ChakraProvider, Flex, Box } from '@chakra-ui/react'
+import { extendTheme, ChakraProvider, Flex, Box } from '@chakra-ui/react'
 const entities = require('entities')
 import GithubCSS from './GithubCSS'
 import QuillBubbleCSS from './QuillBubbleCSS'
@@ -215,7 +215,7 @@ const App = ({
   )
 
   return !initEditor ? null : (
-    <ChakraProvider theme={theme}>
+    <ChakraProvider theme={extendTheme(theme || {})}>
       <GithubCSS />
       <Flex boxSize='100%' w='100%'>
         {mode[0] === 'preview' ? (
