@@ -21,7 +21,9 @@ const App = ({
   md,
   html,
   saveImage,
-  preview
+  preview,
+  no_preview,
+  only_preview
 }) => {
   const monacoRef = useRef(null)
   let quillRef = React.createRef()
@@ -230,43 +232,47 @@ const App = ({
           </Flex>
         ) : mode[0] === 'markdown' ? (
           <>
-            <Flex
-              flex={1}
-              borderRight='3px solid #eee'
-              overflow='hidden'
-              h='100%'
-            >
-              <Editor
-                defaultLanguage='markdown'
-                theme='vs-dark'
-                value={md}
-                options={{
-                  selectOnLineNumbers: true
+            {only_preview ? null : (
+              <Flex
+                flex={1}
+                borderRight='3px solid #eee'
+                overflow='hidden'
+                h='100%'
+              >
+                <Editor
+                  defaultLanguage='markdown'
+                  theme='vs-dark'
+                  value={md}
+                  options={{
+                    selectOnLineNumbers: true
+                  }}
+                  onChange={setMD}
+                  beforeMount={monaco => {
+                    monaco.languages.typescript.javascriptDefaults.setEagerModelSync(
+                      true
+                    )
+                  }}
+                  onMount={(editor, monaco) => {
+                    monacoRef.current = editor
+                  }}
+                  h={height}
+                />
+              </Flex>
+            )}
+            {no_preview ? null : (
+              <Box
+                display={['none', null, null, 'block']}
+                h='100%'
+                className='markdown-body'
+                flex={1}
+                p={3}
+                dangerouslySetInnerHTML={{
+                  __html: preview
                 }}
-                onChange={setMD}
-                beforeMount={monaco => {
-                  monaco.languages.typescript.javascriptDefaults.setEagerModelSync(
-                    true
-                  )
-                }}
-                onMount={(editor, monaco) => {
-                  monacoRef.current = editor
-                }}
-                h={height}
-              />
-            </Flex>
-            <Box
-              display={['none', null, null, 'block']}
-              h='100%'
-              className='markdown-body'
-              flex={1}
-              p={3}
-              dangerouslySetInnerHTML={{
-                __html: preview
-              }}
-            ></Box>
+              ></Box>
+            )}
           </>
-        ) : (
+        ) : only_preview ? null : (
           <Flex justify='center' w='100%' h={height}>
             <Box w='100%' h='100%'>
               <QuillSnowCSS />
