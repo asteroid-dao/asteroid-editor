@@ -261,9 +261,11 @@ const App = ({
               </Flex>
             )}
             {no_preview ? null : (
-              <Flex flex={1}>
+              <Flex
+                flex={1}
+                display={[only_preview ? 'block' : 'none', null, 'block']}
+              >
                 <Box
-                  display={[only_preview ? 'block' : 'none', null, 'block']}
                   h='100%'
                   className='markdown-body'
                   width='100%'
