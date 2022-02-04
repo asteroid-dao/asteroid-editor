@@ -23,7 +23,8 @@ const App = ({
   saveImage,
   preview,
   no_preview,
-  only_preview
+  only_preview,
+  theme
 }) => {
   const monacoRef = useRef(null)
   let quillRef = React.createRef()
@@ -214,7 +215,7 @@ const App = ({
   )
 
   return !initEditor ? null : (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <GithubCSS />
       <Flex boxSize='100%' w='100%'>
         {mode[0] === 'preview' ? (
