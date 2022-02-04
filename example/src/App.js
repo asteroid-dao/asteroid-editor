@@ -1,4 +1,5 @@
 import React, { useRef, useMemo, useState, useEffect } from 'react'
+import { createBreakpoints } from '@chakra-ui/theme-tools'
 import { isNil, isEmpty } from 'ramda'
 import { Nav } from 'asteroid-ui'
 import { Flex, Box } from '@chakra-ui/react'
@@ -10,7 +11,7 @@ let m2q = null
 let m2h = null
 export default () => {
   const [nav, setNav] = useState({ modal: {} })
-  const [mode, setMode] = useState(['richtext', null])
+  const [mode, setMode] = useState(['markdown', null])
   const [html, setHTML] = useState('')
   const [md, setMD] = useState('')
   const [initEditor, setInitEditor] = useState(false)
@@ -65,9 +66,19 @@ export default () => {
       onClick: () => setMode(['preview', mode[0]])
     }
   ]
+  const breakpoints = createBreakpoints({
+    sm: '360px',
+    md: '600px',
+    lg: '1010px',
+    xl: '1280px',
+    '2xl': '1600px',
+    '3xl': '1900px'
+  })
+
   return (
     <Nav
       {...{
+        theme: { breakpoints },
         tmenu_selected: mode[0],
         tmenu,
         logo: 'https://picsum.photos/100/100',
@@ -79,6 +90,7 @@ export default () => {
     >
       <Editor
         {...{
+          theme: { breakpoints },
           preview,
           height: nav.height,
           html,
