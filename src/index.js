@@ -261,16 +261,18 @@ const App = ({
               </Flex>
             )}
             {no_preview ? null : (
-              <Box
-                display={[only_preview ? 'block' : 'none', null, 'block']}
-                h='100%'
-                className='markdown-body'
-                flex={1}
-                p={3}
-                dangerouslySetInnerHTML={{
-                  __html: preview
-                }}
-              ></Box>
+              <Flex flex={1}>
+                <Box
+                  display={[only_preview ? 'block' : 'none', null, 'block']}
+                  h='100%'
+                  className='markdown-body'
+                  width='100%'
+                  p={3}
+                  dangerouslySetInnerHTML={{
+                    __html: preview
+                  }}
+                ></Box>
+              </Flex>
             )}
           </>
         ) : only_preview ? null : (
