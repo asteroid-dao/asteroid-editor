@@ -3272,6 +3272,26 @@ asteroid-parser@^0.0.13:
     unified-stream "^2.0.0"
     unist-util-visit "^4.1.0"
 
+asteroid-parser@^0.0.14:
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/asteroid-parser/-/asteroid-parser-0.0.14.tgz#f7f4e40a6b3a38cc9b186dc7b0ab94b2d2491ae6"
+  integrity sha512-TGSs29vbUmJRc+zUjOfnAxd03P/eXiDEZfmRiFgCF3dMBEEbWTQkw3spdW6FmDDfoLy3ZB4k82UPPCylwzlw1g==
+  dependencies:
+    entities "^3.0.1"
+    hast-util-to-mdast "8.1.0"
+    ramda "^0.28.0"
+    rehype-parse "^8.0.3"
+    rehype-raw "^6.1.1"
+    rehype-remark "8.1.1"
+    rehype-stringify "^9.0.2"
+    remark-parse "^10.0.1"
+    remark-rehype "^10.1.0"
+    remark-slate "^1.8.2"
+    remark-stringify "^10.0.2"
+    unified "^10.1.1"
+    unified-stream "^2.0.0"
+    unist-util-visit "^4.1.0"
+
 astral-regex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/astral-regex/-/astral-regex-1.0.0.tgz#6c8c3fb827dd43ee3918f27b82782ab7658a6fd9"

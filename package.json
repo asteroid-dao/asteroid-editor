@@ -1,6 +1,6 @@
 {
   "name": "asteroid-editor",
-  "version": "0.0.31",
+  "version": "0.0.33",
   "author": "ocrybit",
   "license": "MIT",
   "repository": "ocrybit/asteroid-editor",
@@ -57,7 +57,7 @@
     "@react-hook/debounce": "^4.0.0",
     "@use-it/event-listener": "^0.1.7",
     "asteroid-editor": "^0.0.29",
-    "asteroid-parser": "^0.0.13",
+    "asteroid-parser": "^0.0.14",
     "framer-motion": "4.1.17",
     "ipfs-only-hash": "^4.0.0",
     "js-sha256": "^0.9.0",
