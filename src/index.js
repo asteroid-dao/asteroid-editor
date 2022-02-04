@@ -261,7 +261,7 @@ const App = ({
             )}
             {no_preview ? null : (
               <Box
-                display={[only_preview ? 'block' : 'none', null, null, 'block']}
+                display={[only_preview ? 'block' : 'none', null, 'block']}
                 h='100%'
                 className='markdown-body'
                 flex={1}
