@@ -24,7 +24,9 @@ const App = ({
   preview,
   no_preview,
   only_preview,
-  theme
+  theme,
+  onChangeSelection,
+  setQuillRef
 }) => {
   const monacoRef = useRef(null)
   let quillRef = React.createRef()
@@ -283,8 +285,12 @@ const App = ({
               <QuillSnowCSS />
               <QStyle />
               <ReactQuill
+                {...{ onChangeSelection }}
                 ref={el => {
-                  if (!isNil(el)) quillRef = el.getEditor()
+                  if (!isNil(el)) {
+                    quillRef = el.getEditor()
+                    if (!isNil(setQuillRef)) setQuillRef(el)
+                  }
                 }}
                 onChange={(val, d, s, e) => setHTML(val)}
                 modules={options}
