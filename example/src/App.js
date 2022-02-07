@@ -6,6 +6,7 @@ import { Flex, Box } from '@chakra-ui/react'
 import Editor from 'asteroid-editor'
 import { sha256 } from 'js-sha256'
 import { useDebounce } from '@react-hook/debounce'
+import Dracula from './Dracula'
 let q2m = null
 let m2q = null
 let m2h = null
@@ -17,9 +18,10 @@ export default () => {
   const [initEditor, setInitEditor] = useState(false)
   const [preview, setPreview] = useDebounce('')
   useEffect(() => {
-    if (initEditor) setPreview(m2h(md))
+    if (initEditor) {
+      setPreview(m2h(md))
+    }
   }, [md, initEditor])
-
   useEffect(() => {
     const parser = require('asteroid-parser')
     parser.setImageHook({
@@ -59,11 +61,6 @@ export default () => {
         if (mode[0] === 'markdown' || mode[1] === 'markdown') setHTML(m2q(md))
         setMode(['richtext', mode[0] === 'preview' ? mode[1] : mode[0]])
       }
-    },
-    {
-      key: 'preview',
-      name: 'Preview',
-      onClick: () => setMode(['preview', mode[0]])
     }
   ]
   const breakpoints = createBreakpoints({
@@ -88,6 +85,7 @@ export default () => {
         modal: {}
       }}
     >
+      <Dracula />
       <Editor
         {...{
           theme: { breakpoints },
