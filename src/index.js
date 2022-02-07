@@ -39,6 +39,10 @@ const App = ({
     let Break = ReactQuill.Quill.import('blots/break')
     let Embed = ReactQuill.Quill.import('blots/embed')
     let Block = ReactQuill.Quill.import('blots/block')
+    const Strike = ReactQuill.Quill.import('formats/strike')
+    Strike.tagName = 'DEL'
+    ReactQuill.Quill.register(Strike, true)
+
     class SmartBreak extends Break {
       length() {
         return 1
@@ -63,8 +67,17 @@ const App = ({
     ReactQuill.Quill.register(SmartBreak)
     options = {
       toolbar: [
-        [{ header: [1, 2, 3, false] }],
-        ['bold', 'italic', 'blockquote', 'link', 'image'],
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        [
+          'bold',
+          'italic',
+          'underline',
+          'strike',
+          'blockquote',
+          'link',
+          'image'
+        ],
+        [{ color: [] }, { background: [] }],
         [{ list: 'ordered' }, { list: 'bullet' }],
         ['clean']
       ],
@@ -267,6 +280,11 @@ const App = ({
                 flex={1}
                 display={[only_preview ? 'block' : 'none', null, 'block']}
               >
+                <style global jsx>{`
+                  .katex .mfrac .frac-line {
+                    border-color: #24292f;
+                  }
+                `}</style>
                 <Box
                   h='100%'
                   className='markdown-body'
